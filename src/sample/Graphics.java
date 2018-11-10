@@ -124,7 +124,7 @@ public class Graphics extends Logic {
             lastCard++;
             if(playerBusted())
                 pane.getChildren().add(addText("You busted!!!"));
-            System.out.println(playerSum());
+            System.out.println(playerSum);
         }
     }
 
@@ -161,11 +161,14 @@ public class Graphics extends Logic {
     }
 
     public void getWinner(){
-        if(dealerSum < playerSum())
+        playerSum();
+        System.out.println("Playersum: " + playerSum);
+        System.out.println("DealerSum: " + dealerSum);
+        if(dealerSum < playerSum)
             pane.getChildren().add(addText("Congratulations\n You won!!"));
-        if(dealerSum > playerSum())
+        if(dealerSum > playerSum)
             pane.getChildren().add(addText("You lost!!!"));
-        if(dealerSum == playerSum())
+        if(dealerSum == playerSum)
             pane.getChildren().add(addText("Its a draw"));
     }
 

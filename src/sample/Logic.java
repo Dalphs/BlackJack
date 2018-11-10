@@ -8,6 +8,7 @@ public class Logic extends Game{
     private ArrayList<Integer> cardsValue = new ArrayList<>();
     protected int dealerNumberOfHits = 0;
     protected int dealerSum;
+    int playerSum = 0;
 
     //A constructor that create a new instance of the Logic class and assigns a deck of cards to the variable cards
     public Logic() {
@@ -16,7 +17,8 @@ public class Logic extends Game{
 
     //This method returns true if the player busts
     public boolean playerBusted(){
-        if(playerSum() > 21)
+        playerSum();
+        if(playerSum > 21)
             return true;
         return false;
     }
@@ -37,13 +39,13 @@ public class Logic extends Game{
 
     //This method calculates the sum of the players' cards. We know the player has card index 0 and 2,
     // and all cards from index 4 to playersLastCard. Then we add the value of all those cards
-    public int playerSum(){
-        int sum = 0;
-        sum += cardsValue.get(0) + cardsValue.get(2);
-        for (int i = 4; i <= lastCard; i++) {
-            sum += cardsValue.get(i);
+    public void playerSum(){
+        if (playerSum < cardsValue.get(0) + cardsValue.get(2))
+            playerSum += cardsValue.get(0) + cardsValue.get(2);
+
+        for (int i = 4; i < lastCard; i++) {
+            playerSum += cardsValue.get(i);
         }
-        return sum;
     }
 
     //This method calculates the sum of the dealers cards. We know the dealer has card index 1 and 3.

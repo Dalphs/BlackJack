@@ -1,44 +1,37 @@
 package sample;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
-public class Logic {
+public class Logic extends Game{
     //Classvariables that consists of two arraylists (cards and cards values) and an int (PlayerLastCard)
-    private ArrayList<Integer> cards;
     private ArrayList<Integer> cardsValue = new ArrayList<>();
-    private int playerLastCard = Main.getLastPlayerCard();
+    protected int dealerNumberOfHits = 0;
+    protected int dealerSum;
 
     //A constructor that create a new instance of the Logic class and assigns a deck of cards to the variable cards
-    public Logic(ArrayList<Integer> cards) {
-        this.cards = cards;
-        copyArray();
+    public Logic() {
     }
 
-    //This method returns true if the game is finished, which is true if the player busts,
-    // the dealer stands or the dealer busts
-    public  boolean gameFinished(){
-        if(playerBusted())
-            return true;
-        if(dealerBusted())
-            return true;
-        if(dealerStands())
-            return true;
-
-        return false;
-    }
 
     //This method returns true if the player busts
     public boolean playerBusted(){
+        if(playerSum() > 21)
+            return true;
         return false;
     }
 
     //This method returns true if the dealer busts
     public boolean dealerBusted(){
-       return false;
+       if(dealerSum > 21)
+           return true;
+        return false;
     }
 
     //This method returns true if the dealer has 17-21
     public boolean dealerStands(){
+        if(dealerSum >= 17 && dealerSum <= 21)
+            return true;
         return false;
     }
 
@@ -47,7 +40,7 @@ public class Logic {
     public int playerSum(){
         int sum = 0;
         sum += cardsValue.get(0) + cardsValue.get(2);
-        for (int i = 4; i < playerLastCard; i++) {
+        for (int i = 4; i <= lastCard; i++) {
             sum += cardsValue.get(i);
         }
         return sum;
@@ -57,12 +50,14 @@ public class Logic {
     // If the dealer doesnt stand or bust as determined in other methods, this method will calculate the sum,
     //by adding the the cards that comes after the users last card untill the dealer either busts og stand
     public int dealerSum(){
-        int index = playerLastCard + 1;
-        int sum = 0;
-        sum += cardsValue.get(1) + cardsValue.get(3);
-        while(!dealerStands() && dealerBusted()){
+        int index = lastCard;
+        int sum = cardsValue.get(1) + cardsValue.get(3);
+        while(sum < 17){
             sum += cardsValue.get(index);
+            System.out.println("index: " + index);
+            System.out.println("CardValue" + cardsValue.get(index));
             index++;
+            dealerNumberOfHits++;
         }
         return sum;
     }
@@ -90,7 +85,6 @@ public class Logic {
                 }
             }
         }
-        printCards();
     }
 
 
@@ -107,7 +101,7 @@ public class Logic {
             System.out.println(i);
         }
         System.out.println("------------------------------------------------------------------");
-        for (Integer i:cards) {
+        for (Integer i: cards) {
             System.out.println(i);
         }
     }

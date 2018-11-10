@@ -1,35 +1,39 @@
 package sample;
 
-import javafx.application.Application;
-import javafx.scene.Scene;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
-import javafx.stage.Stage;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 
-public class Main extends Application {
-    //Class variables
-    //Arraylist for storing cards
-   /* private static ArrayList<Integer> cards = new ArrayList<>();
-    //Int to keep track of the current index for the cards arraylist
-    private static int cardIndex = 0;
+import java.util.ArrayList;
+
+import static java.awt.Color.black;
+
+public class Graphics extends Logic {
     //Pane that we add all out nodes to
     private static Pane pane = new Pane();
     //4 doubles to control where new cards will get placed in the pane
-    private static double dealerX = 440;
-    private static double dealerY = 65;
+    public static double dealerX = 440;
+    public static double dealerY = 65;
     private static double playerX = 440;
     private static double playerY = 350;
-    //Int that keeps trac of the players last hit
-    private static int lastCard = 3;
-    //An instance of our Logic class, that runs the logic behid the game
-    private static Logic game;*/
+    //Arraylist for storing card imv
+    ArrayList<ImageView> cardsImv = new ArrayList<ImageView>();
 
-    @Override
-    public void start(Stage primaryStage) throws Exception{
 
+    public Graphics() {
+    }
+
+    public void defaultLayout(){
         //First we add an image from our src folder int the current project
         // The we create and ImageView to show the picture, and sets the height and width of the picture,
         // to fit our scene. Then we add it to the pane
-        /*Image table = new Image("/bord.jpg");
+        Image table = new Image("/bord.jpg");
         ImageView tableImv = new ImageView(table);
         tableImv.setFitHeight(600);
         tableImv.setFitWidth(1200);
@@ -49,35 +53,6 @@ public class Main extends Application {
 
         //We add both buttons to our pane
         pane.getChildren().addAll(hit, stand);
-
-
-        //We use the fillArray method on the cards arraylist
-        fillArray(cards);
-        //We call the startGame method
-        startGame();
-        //We make a new instance of our Logic class, and gives it our deck of cards
-        game = new Logic(cards);
-        //This method changes the cards from specific cards to the general values for the cards
-        game.getValues();
-        System.out.println(game.playerSum());
-
-
-        //We set the name of our window to "Black Jack" and set the size of the scene to 1200x600
-        //Then we show the scene that containns our pane*/
-        BlackJack game = new BlackJack();
-        game.startGame();
-        Pane pane = game.getPane();
-        primaryStage.setTitle("Black Jack");
-        primaryStage.setScene(new Scene(pane, 1200, 600));
-        primaryStage.show();
-
-
-
-    }
-
-
-   /* public static void main(String[] args) {
-        launch(args);
     }
 
     //This button makes a new button with a specified text and location in a pane
@@ -90,7 +65,7 @@ public class Main extends Application {
         button.setLayoutY(y);
         //This buttonstyle was found on the internet and makes a beautiful blue button
         button.setStyle("-fx-background-color: #000000, linear-gradient(#7ebcea, #2f4b8f), " +
-                        "linear-gradient(#426ab7, #263e75), linear-gradient(#395cab, #223768); " +
+                "linear-gradient(#426ab7, #263e75), linear-gradient(#395cab, #223768); " +
                 "-fx-background-insets: 0,1,2,3; " +
                 "-fx-background-radius: 3,2,2,2; -fx-padding: 12 30 12 30; " +
                 "-fx-text-fill: white; " +
@@ -99,27 +74,7 @@ public class Main extends Application {
         return button;
     }
 
-    //This method fills the cards arraylist with the numbers from 1-52,
-    // which will represent all cards in a deck of cards
-    //1-13 is spades, 14-26 is hearts, 27-39 is diamonds and 40-52 is clubs
-    public static void fillArray(ArrayList<Integer> list){
-        for (int i = 1; i <= 52; i++) {
-            list.add(i);
-        }
-    }
-
-    //This method gives the player the first and third card, and the dealer the second
-    //and fourth card, where the last one is face down
-    public static void startGame(){
-        //We reset the class class variable so we in the future can run the program contiously,
-        // and every time we want to reset the index counter, because we want the first card
-        cardIndex = 0;
-        //We use the static method shuffle from the Collection class to shuffle our Cards array,
-        // so our deck of card is random
-        Collections.shuffle(cards);
-
-        //We create 4 imageviews for the first 4 cards of the game. When we create the cards
-        //We also increase the playerX variable so the next card will be placed further to the right
+    public void dealCards(){
         ImageView player1 = getCard(playerX += 50, playerY );
         ImageView dealer1 = getCard(dealerX += 50, dealerY );
         ImageView player2 = getCard(playerX += 50, playerY );
@@ -133,8 +88,8 @@ public class Main extends Application {
     //The methods receives varibles for the coordinates of the Imageviews position in the pane
     public static ImageView getCard(double x, double y){
         //First we declare an instance of the image class as card
-       Image card;
-       //If its the fourth card we want it to face down, all others card should be displayed face up
+        Image card;
+        //If its the fourth card we want it to face down, all others card should be displayed face up
         if(cardIndex != 3) {
             //Since each picture has the same file name except for the number
             //and are in the same folder, we only need to change the number
@@ -167,9 +122,9 @@ public class Main extends Application {
             //We add the new Imageview to the pane
             pane.getChildren().add(newCard);
             lastCard++;
-            System.out.println(game.playerSum());
-            if(game.playerBusted())
-                System.out.println("Player busted");
+            if(playerBusted())
+                pane.getChildren().add(addText("You busted!!!"));
+            System.out.println(playerSum());
         }
     }
 
@@ -192,27 +147,36 @@ public class Main extends Application {
             pane.getChildren().add(cardImv);
             //We set the class variable lastCard to the current cardIndex.
             //We know the player doesnt want anyymore cards because the player has pressed stand
-            System.out.println(game.dealerSum());
+            lastCard = cardIndex;
+            dealerSum = dealerSum();
+            for (int i = 0; i < dealerNumberOfHits; i++) {
+                pane.getChildren().add(getCard(dealerX += 50, dealerY));
+            }
+            System.out.println("dealerbusted: " + dealerBusted());
+            if(dealerBusted())
+                pane.getChildren().add(addText("Dealer busted\n You won!!"));
+            else
+                getWinner();
         }
     }
 
-    //Getter for getting the Arraylist cards from outside the class
-    public static ArrayList<Integer> getCards() {
-        return cards;
+    public void getWinner(){
+        if(dealerSum < playerSum())
+            pane.getChildren().add(addText("Congratulations\n You won!!"));
+        if(dealerSum > playerSum())
+            pane.getChildren().add(addText("You lost!!!"));
+        if(dealerSum == playerSum())
+            pane.getChildren().add(addText("Its a draw"));
     }
 
-    //Getter fro getting the value of the int getlastPlayerCard from outside the class
-    public static int getLastCard() {
-        return lastCard;
+    public Text addText(String title){
+        Text text = new Text(title);
+        text.setX(400); text.setY(300);
+        text.setFont(Font.font("Verdana", FontWeight.BOLD, 70));
+        return text;
     }
 
-    public static double getDealerX() {
-        return dealerX;
+    public Pane getPane() {
+        return pane;
     }
-
-    public static double getDealerY() {
-        return dealerY;
-    }*/
 }
-
-

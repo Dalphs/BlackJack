@@ -11,7 +11,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
 
         //We set the name of our window to "Black Jack" and set the size of the scene to 1200x600
-        //Then we show the scene that containns our pane*/
+        //Then we show the scene that contains our pane
         BlackJack game = new BlackJack();
         game.startGame();
         Pane pane = game.getPane();

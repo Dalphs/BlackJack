@@ -11,19 +11,23 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import static java.awt.Color.black;
 
 public class Graphics extends Logic {
     //Pane that we add all out nodes to
-    private static Pane pane = new Pane();
+    protected static Pane pane = new Pane();
     //4 doubles to control where new cards will get placed in the pane
-    public static double dealerX = 440;
-    public static double dealerY = 65;
-    private static double playerX = 440;
-    private static double playerY = 350;
+    public static double dealerX;
+    public static double dealerY;
+    private static double playerX;
+    private static double playerY;
     //Arraylist for storing card imv
     ArrayList<ImageView> cardsImv = new ArrayList<ImageView>();
+    //Buttons we use to start the first game, and start a new game
+    Button start;
+    Button newGame = makeButton("New game", 200,  250, 200, 100);
 
 
     public Graphics() {
@@ -41,13 +45,13 @@ public class Graphics extends Logic {
 
         //We use the button method to create a button with a specified text and placement
         //Then we create a hitHandler to handle when a button is clicked, and connects the button to the handler
-        Button hit = makeButton("Hit", 0, 500);
+        Button hit = makeButton("Hit", 0, 500, 150, 100);
         HitHandler hitHandler = new HitHandler();
         hit.setOnAction(hitHandler);
 
         //We create a new button, the same way as above(This should probably be a method,
         // since its basically the same code as above
-        Button stand = makeButton("Stand", 1050, 500);
+        Button stand = makeButton("Stand", 1050, 500, 150, 100);
         StandHandler standHandler = new StandHandler();
         stand.setOnAction(standHandler);
 
@@ -55,11 +59,11 @@ public class Graphics extends Logic {
         pane.getChildren().addAll(hit, stand);
     }
 
-    //This button makes a new button with a specified text and location in a pane
-    public static Button makeButton(String name, double x, double y){
+    //This button makes a new button with a specified text, location and size in a pane
+    public static Button makeButton(String name, double x, double y, int width, int height){
         //We make an instance of the Button class and sets its size to 150x100
         Button button = new Button(name);
-        button.setPrefSize(150,100);
+        button.setPrefSize(width,height);
         //We set the placement of our button in a pane with the specified x and y coordinates
         button.setLayoutX(x);
         button.setLayoutY(y);
@@ -74,6 +78,7 @@ public class Graphics extends Logic {
         return button;
     }
 
+    //This method deals the first 2 cards to the player and dealer
     public void dealCards(){
         ImageView player1 = getCard(playerX += 50, playerY );
         ImageView dealer1 = getCard(dealerX += 50, dealerY );
@@ -82,6 +87,18 @@ public class Graphics extends Logic {
 
         //We add the four cards to the pane
         pane.getChildren().addAll(player1, dealer1, player2, dealer2);
+    }
+
+    //This method creates a startbutton, that will start our first game
+    public void startButton(){
+        //We assign the classvariable Button "start" the value of a new button
+        start = makeButton("Start game", 500, 250, 200, 100);
+        //We create a new StartHandler object to take action when start is pressed
+        StartHandler startHandler = new StartHandler();
+        start.setOnAction(startHandler);
+        newGame.setOnAction(startHandler);
+        //We add the new button to our pane
+        pane.getChildren().add(start);
     }
 
     //Method that creates the corresponding imageView for the next value in the cards array
@@ -122,9 +139,10 @@ public class Graphics extends Logic {
             //We add the new Imageview to the pane
             pane.getChildren().add(newCard);
             lastCard++;
-            if(playerBusted())
+            if(playerBusted()) {
                 pane.getChildren().add(addText("You busted!!!"));
-            System.out.println(playerSum);
+                pane.getChildren().add(newGame);
+            }
         }
     }
 
@@ -148,22 +166,32 @@ public class Graphics extends Logic {
             //We set the class variable lastCard to the current cardIndex.
             //We know the player doesnt want anyymore cards because the player has pressed stand
             lastCard = cardIndex;
-            dealerSum = dealerSum();
+            //Updates dealerSum
+            dealerSum();
+            //This loop adds the dealers cards
             for (int i = 0; i < dealerNumberOfHits; i++) {
                 pane.getChildren().add(getCard(dealerX += 50, dealerY));
             }
-            System.out.println("dealerbusted: " + dealerBusted());
-            if(dealerBusted())
+            //If the dealer busted, it will add text that says the dealer busted and a button to start a new game
+            if(dealerBusted()) {
                 pane.getChildren().add(addText("Dealer busted\n You won!!"));
-            else
+                pane.getChildren().add(newGame);
+            }
+            //This gets the winner using the getWinner method and creates a button to start a new game
+            else {
                 getWinner();
+                pane.getChildren().add(newGame);
+            }
         }
     }
 
+    //This method tells the user who won
     public void getWinner(){
+        //Updates the dealerSum and prints the players and dealers sum to the console
         playerSum();
         System.out.println("Playersum: " + playerSum);
         System.out.println("DealerSum: " + dealerSum);
+        //We know neither the dealer nor player busted so whoever has the highest score wins, and if theyre even they draw
         if(dealerSum < playerSum)
             pane.getChildren().add(addText("Congratulations\n You won!!"));
         if(dealerSum > playerSum)
@@ -172,11 +200,47 @@ public class Graphics extends Logic {
             pane.getChildren().add(addText("Its a draw"));
     }
 
+    //This method takes a string and returns it as a Text object
     public Text addText(String title){
+        //We create a new text from the string and sets its position and font
         Text text = new Text(title);
         text.setX(400); text.setY(300);
         text.setFont(Font.font("Verdana", FontWeight.BOLD, 70));
         return text;
+    }
+
+    //classs StartHandler for handling certain events
+    class StartHandler implements EventHandler<ActionEvent> {
+        //This method starts a new game
+        @Override
+        public void handle(ActionEvent e){
+            //First we set/reset our classvariables, so all methods works as intended
+            dealerX = 440;
+            dealerY = 65;
+            playerX = 440;
+            playerY = 350;
+            dealerNumberOfHits = 0;
+            dealerSum = 0;
+            playerSum = 0;
+            lastCard = 3;
+            cardIndex = 0;
+            //We clear the arraylists with cards and cardsValues as well as the pane that displays out game
+            cardsValue.clear();
+            pane.getChildren().clear();
+            cards.clear();
+            //Prints the default layout with background and buttons
+            defaultLayout();
+            //Fills the vleared array, shuffles it, then copies it to the cardValues arraylist
+            fillArray(cards);
+            Collections.shuffle(cards);
+            copyArray();
+            //converts the values from the cards arraylist to the corresponding points in blackjack
+            getValues();
+            //Giives the player and dealer 2 cards each
+            dealCards();
+            //Removes the start button
+            pane.getChildren().remove(start);
+        }
     }
 
     public Pane getPane() {

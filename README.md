@@ -20,9 +20,11 @@ I have decided to build a simple Black Jack game
 
 * Starting a new game when the current game is finished
 
-## Began and still need to finish code for......
-
 * Using CSS when displaying the winner
+
+* Showing the dealers and players points
+
+## Began and still need to finish code for......
 
 
 ## Things i want to implement......
@@ -35,9 +37,11 @@ I have decided to build a simple Black Jack game
 
 * Splitting and doubling
 
-* Instant win if player has 21 and doesnt have 10 or Ace (Winner, Winner, Chicken Dinner!)
+* Instant win if player has 21 and dealer doesnt have 10 or Ace (Winner, Winner, Chicken Dinner!)
 
 * Option to add several players
+
+* Insurance
 
 * Bonus games such as perfect pair
 

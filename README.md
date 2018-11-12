@@ -14,15 +14,20 @@ I have decided to build a simple Black Jack game
 
 * Converting the specific card values from 1-52 to 1-10
 
-## Stil need to finish code for......
-
 * Determining whether dealer or player busts, and if dealer should hit or stand
 
 * Determining a winner
 
-* Running a new continuosly untill player stops
+* Starting a new game when the current game is finished
+
+## Began and still need to finish code for......
+
+* Using CSS when displaying the winner
+
 
 ## Things i want to implement......
+
+* Add delay when dealing cards and announcing winner
 
 * Showing statistics of the session played 
 

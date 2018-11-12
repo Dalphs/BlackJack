@@ -1,5 +1,8 @@
 package sample;
 
+import javafx.scene.control.Label;
+import javafx.scene.text.Text;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -10,6 +13,7 @@ public class Logic extends Game{
     protected int dealerNumberOfHits;
     protected int dealerSum;
     protected int playerSum;
+    Text playerCount;
 
     //A constructor that create a new instance of the Logic class and assigns a deck of cards to the variable cards
     public Logic() {
@@ -18,7 +22,7 @@ public class Logic extends Game{
 
     //This method updates the classvariable playersum returns true if the player busts
     public boolean playerBusted(){
-        dealerSum();
+        playerSum();
         if(playerSum > 21)
             return true;
         return false;
@@ -65,6 +69,7 @@ public class Logic extends Game{
                 tenPoints = false;
             }
         }
+        playerCount.setText(Integer.toString(playerSum));
     }
 
     //This method calculates the sum of the dealers cards. We know the dealer has card index 1 and 3.
@@ -74,7 +79,7 @@ public class Logic extends Game{
     public void dealerSum(){
         dealerSum = 0;
         boolean tenPoints = false;
-        int index = lastCard;
+        int index = lastCard + 1;
         dealerSum = cardsValue.get(1) + cardsValue.get(3);
         if(cardsValue.get(1) == 1 || cardsValue.get(3) == 1) {
             tenPoints = true;
@@ -82,8 +87,6 @@ public class Logic extends Game{
         }
         while(dealerSum < 17){
             dealerSum += cardsValue.get(index);
-            index++;
-            dealerNumberOfHits++;
             if(cardsValue.get(index) == 1 && !tenPoints && dealerSum <= 11) {
                 tenPoints = true;
                 dealerSum += 10;
@@ -92,6 +95,8 @@ public class Logic extends Game{
                 dealerSum -= 10;
                 tenPoints = false;
             }
+            index++;
+            dealerNumberOfHits++;
         }
 
     }

@@ -16,7 +16,9 @@ public class Main extends Application {
         game.startGame();
         Pane pane = game.getPane();
         primaryStage.setTitle("Black Jack");
-        primaryStage.setScene(new Scene(pane, 1200, 600));
+        Scene scene = new Scene(pane, 1200, 600);
+        scene.getStylesheets().add("sample/Layout.css");
+        primaryStage.setScene(scene);
         primaryStage.show();
     }
 

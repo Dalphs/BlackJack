@@ -3,6 +3,7 @@ package sample;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -67,13 +68,7 @@ public class Graphics extends Logic {
         //We set the placement of our button in a pane with the specified x and y coordinates
         button.setLayoutX(x);
         button.setLayoutY(y);
-        //This buttonstyle was found on the internet and makes a beautiful blue button
-        button.setStyle("-fx-background-color: #000000, linear-gradient(#7ebcea, #2f4b8f), " +
-                "linear-gradient(#426ab7, #263e75), linear-gradient(#395cab, #223768); " +
-                "-fx-background-insets: 0,1,2,3; " +
-                "-fx-background-radius: 3,2,2,2; -fx-padding: 12 30 12 30; " +
-                "-fx-text-fill: white; " +
-                "-fx-font-size: 24px;");
+
         //We return the new button we have just created
         return button;
     }
@@ -163,18 +158,19 @@ public class Graphics extends Logic {
             cardImv.setLayoutY(dealerY);
             //We add the ImageView to the pane
             pane.getChildren().add(cardImv);
+            dealerSum();
             //We set the class variable lastCard to the current cardIndex.
             //We know the player doesnt want anyymore cards because the player has pressed stand
             lastCard = cardIndex;
-            //Updates dealerSum
-            dealerSum();
             //This loop adds the dealers cards
             for (int i = 0; i < dealerNumberOfHits; i++) {
                 pane.getChildren().add(getCard(dealerX += 50, dealerY));
             }
+            Text dealerCount = addText(Integer.toString(dealerSum), 460, 100);
+            pane.getChildren().add(dealerCount);
             //If the dealer busted, it will add text that says the dealer busted and a button to start a new game
             if(dealerBusted()) {
-                pane.getChildren().add(addText("Dealer busted\n You won!!"));
+                pane.getChildren().add(addText("Dealer busted"));
                 pane.getChildren().add(newGame);
             }
             //This gets the winner using the getWinner method and creates a button to start a new game
@@ -187,13 +183,10 @@ public class Graphics extends Logic {
 
     //This method tells the user who won
     public void getWinner(){
-        //Updates the dealerSum and prints the players and dealers sum to the console
-        playerSum();
-        System.out.println("Playersum: " + playerSum);
-        System.out.println("DealerSum: " + dealerSum);
-        //We know neither the dealer nor player busted so whoever has the highest score wins, and if theyre even they draw
+        //We know neither the dealer nor player busted so whoever has the highest score wins, and if they're even they draw
+        System.out.println("playerSum: " + playerSum + " dealerSum: " + dealerSum);
         if(dealerSum < playerSum)
-            pane.getChildren().add(addText("Congratulations\n You won!!"));
+            pane.getChildren().add(addText("You won!!"));
         if(dealerSum > playerSum)
             pane.getChildren().add(addText("You lost!!!"));
         if(dealerSum == playerSum)
@@ -205,7 +198,16 @@ public class Graphics extends Logic {
         //We create a new text from the string and sets its position and font
         Text text = new Text(title);
         text.setX(400); text.setY(300);
-        text.setFont(Font.font("Verdana", FontWeight.BOLD, 70));
+        text.setId("winning-text");
+        return text;
+    }
+
+    //This method takes a string and returns it as a Text object
+    public Text addText(String title, double x, double y){
+        //We create a new text from the string and sets its position and font
+        Text text = new Text(title);
+        text.setX(x); text.setY(y);
+        text.setId("points-text");
         return text;
     }
 
@@ -240,6 +242,9 @@ public class Graphics extends Logic {
             dealCards();
             //Removes the start button
             pane.getChildren().remove(start);
+            playerCount = addText(Integer.toString(playerSum), 460, 440);
+            pane.getChildren().add(playerCount);
+            playerSum();
         }
     }
 

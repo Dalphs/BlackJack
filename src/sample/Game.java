@@ -10,7 +10,10 @@ public class Game {
     //Int to keep track of the current index for the cards arraylist
     public static int cardIndex;
     //Int that keeps trac of the players last hit
-    public static int lastCard;
+    public static int lastCad;
+    ArrayList<Actors> players = new ArrayList<>();
+    public static int numberOfPlayers = 0;
+    public static int playerTurn = 0;
 
     public Game() {
     }

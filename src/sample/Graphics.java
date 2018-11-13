@@ -3,18 +3,13 @@ package sample;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-
 import java.util.ArrayList;
 import java.util.Collections;
 
-import static java.awt.Color.black;
 
 public class Graphics extends Logic {
     //Pane that we add all out nodes to
@@ -75,13 +70,14 @@ public class Graphics extends Logic {
 
     //This method deals the first 2 cards to the player and dealer
     public void dealCards(){
-        ImageView player1 = getCard(playerX += 50, playerY );
-        ImageView dealer1 = getCard(dealerX += 50, dealerY );
-        ImageView player2 = getCard(playerX += 50, playerY );
-        ImageView dealer2 = getCard(dealerX += 50, dealerY );
-
-        //We add the four cards to the pane
-        pane.getChildren().addAll(player1, dealer1, player2, dealer2);
+        for (int i = 0; i < 2; i++) {
+            for (Actors a: players) {
+                ImageView temp = getCard(a.getX(), a.getY());
+                a.setX(a.getX() + 50);
+                pane.getChildren().add(temp);
+                cardsImv.add(temp);
+            }
+        }
     }
 
     //This method creates a startbutton, that will start our first game
@@ -102,7 +98,7 @@ public class Graphics extends Logic {
         //First we declare an instance of the image class as card
         Image card;
         //If its the fourth card we want it to face down, all others card should be displayed face up
-        if(cardIndex != 3) {
+        if(cardIndex != numberOfPlayers * 2 - 1) {
             //Since each picture has the same file name except for the number
             //and are in the same folder, we only need to change the number
             card = new Image("card/" + cards.get(cardIndex) + ".png");
@@ -127,17 +123,14 @@ public class Graphics extends Logic {
         //This method is creates a new card when the player presses the hit button
         @Override
         public void handle(ActionEvent e){
+            players.get(playerTurn).addCard(cards.get(cardIndex), cardsValue.get(cardIndex));
             //We declare a new ImageView newCard and assign the value of an imageview created in the getCard method
             //We set the x and y coordinate to the class variables playerX and PlayerY and increases the playerX
             //variable by 50, so the next card will be placed further to the right
             ImageView newCard = getCard(playerX += 50, playerY);
             //We add the new Imageview to the pane
             pane.getChildren().add(newCard);
-            lastCard++;
-            if(playerBusted()) {
-                pane.getChildren().add(addText("You busted!!!"));
-                pane.getChildren().add(newGame);
-            }
+
         }
     }
 
@@ -145,51 +138,42 @@ public class Graphics extends Logic {
     class StandHandler implements EventHandler<ActionEvent> {
         //This method displays the dealers card face-up
         @Override
-        public void handle(ActionEvent e){
+        public void handle(ActionEvent e) {
+            playerTurn++;
+            if (playerTurn == numberOfPlayers - 1) {
+                showDealerCard();
+            }
+        }
+    }
+
+        public void showDealerCard(){
             //We create a new image, and we know its card number 3, since that the card the dealer has face down
-            Image card = new Image("card/" + cards.get(3) + ".png");
+            Image card = new Image("card/" + cards.get(numberOfPlayers * 2 - 1) + ".png");
             //We create an imageView to display the Image of the card and set the width and height of it
             ImageView cardImv = new ImageView(card);
             cardImv.setFitWidth(80);
             cardImv.setFitHeight(120);
             //We set the coordinates as the class variables dealerX and dealerY.
             // We don't increase dealerX this time, since we want the card on top of the face down card
-            cardImv.setLayoutX(dealerX);
-            cardImv.setLayoutY(dealerY);
+            cardImv.setLayoutX(players.get(numberOfPlayers - 1).getX() - 50);
+            cardImv.setLayoutY(players.get(numberOfPlayers - 1).getY());
+            cardsImv.add(numberOfPlayers * 2 - 1, cardImv);
+            pane.getChildren().remove(cardsImv.get(numberOfPlayers * 2));
+            cardsImv.remove(numberOfPlayers * 2);
             //We add the ImageView to the pane
             pane.getChildren().add(cardImv);
-            dealerSum();
-            //We set the class variable lastCard to the current cardIndex.
-            //We know the player doesnt want anyymore cards because the player has pressed stand
-            lastCard = cardIndex;
-            //This loop adds the dealers cards
-            for (int i = 0; i < dealerNumberOfHits; i++) {
-                pane.getChildren().add(getCard(dealerX += 50, dealerY));
-            }
-            Text dealerCount = addText(Integer.toString(dealerSum), 460, 100);
-            pane.getChildren().add(dealerCount);
-            //If the dealer busted, it will add text that says the dealer busted and a button to start a new game
-            if(dealerBusted()) {
-                pane.getChildren().add(addText("Dealer busted"));
-                pane.getChildren().add(newGame);
-            }
-            //This gets the winner using the getWinner method and creates a button to start a new game
-            else {
-                getWinner();
-                pane.getChildren().add(newGame);
-            }
         }
-    }
+
 
     //This method tells the user who won
-    public void getWinner(){
+    public void getWinner(Actors a, Actors b){
         //We know neither the dealer nor player busted so whoever has the highest score wins, and if they're even they draw
-        System.out.println("playerSum: " + playerSum + " dealerSum: " + dealerSum);
-        if(dealerSum < playerSum)
+        System.out.println("playerSum: " + a.getSum() + " dealerSum: " + b.getSum());
+        if(b.getSum() < a.getSum())
             pane.getChildren().add(addText("You won!!"));
-        if(dealerSum > playerSum)
+        if(b.getSum() > a.getSum())
             pane.getChildren().add(addText("You lost!!!"));
-        if(dealerSum == playerSum)
+        if(b.getSum() == a.getSum())
             pane.getChildren().add(addText("Its a draw"));
     }
 
@@ -211,25 +195,22 @@ public class Graphics extends Logic {
         return text;
     }
 
+    public void resetGraphics(){
+        dealerX = 440;
+        dealerY = 65;
+        playerX = 440;
+        playerY = 350;
+        pane.getChildren().clear();
+    }
+
     //classs StartHandler for handling certain events
     class StartHandler implements EventHandler<ActionEvent> {
         //This method starts a new game
         @Override
         public void handle(ActionEvent e){
             //First we set/reset our classvariables, so all methods works as intended
-            dealerX = 440;
-            dealerY = 65;
-            playerX = 440;
-            playerY = 350;
-            dealerNumberOfHits = 0;
-            dealerSum = 0;
-            playerSum = 0;
-            lastCard = 3;
-            cardIndex = 0;
-            //We clear the arraylists with cards and cardsValues as well as the pane that displays out game
-            cardsValue.clear();
-            pane.getChildren().clear();
-            cards.clear();
+            resetLogic();
+            resetGraphics();
             //Prints the default layout with background and buttons
             defaultLayout();
             //Fills the vleared array, shuffles it, then copies it to the cardValues arraylist
@@ -242,9 +223,7 @@ public class Graphics extends Logic {
             dealCards();
             //Removes the start button
             pane.getChildren().remove(start);
-            playerCount = addText(Integer.toString(playerSum), 460, 440);
             pane.getChildren().add(playerCount);
-            playerSum();
         }
     }
 

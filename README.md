@@ -28,6 +28,7 @@ I have decided to build a simple Black Jack game
 
 ## Began and still need to finish code for......
 
+* Multiplayer
 
 ## Things i want to implement......
 

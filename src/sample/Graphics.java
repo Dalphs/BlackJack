@@ -6,6 +6,8 @@ import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,19 +16,27 @@ import java.util.Collections;
 public class Graphics extends Logic {
     //Pane that we add all out nodes to
     protected static Pane pane = new Pane();
-    //4 doubles to control where new cards will get placed in the pane
-    public static double dealerX;
-    public static double dealerY;
-    private static double playerX;
-    private static double playerY;
     //Arraylist for storing card imv
     ArrayList<ImageView> cardsImv = new ArrayList<ImageView>();
+    ArrayList<Text> counters = new ArrayList<>();
     //Buttons we use to start the first game, and start a new game
     Button start;
     Button newGame = makeButton("New game", 200,  250, 200, 100);
+    private Circle playerMarker;
 
 
     public Graphics() {
+    }
+
+    public void createPlayerMarker(){
+        playerMarker = new Circle(players.get(0).getX() - 30, players.get(0).getY() + 60, 25, Color.CYAN);
+        playerMarker.setOpacity(0.5);
+        pane.getChildren().add(playerMarker);
+    }
+
+    public void rearrangeCircle(Actors a){
+        playerMarker.setCenterX(a.getX() - 30);
+        playerMarker.setCenterY(a.getY() + 60);
     }
 
     public void defaultLayout(){
@@ -123,16 +133,48 @@ public class Graphics extends Logic {
         //This method is creates a new card when the player presses the hit button
         @Override
         public void handle(ActionEvent e){
-            players.get(playerTurn).addCard(cards.get(cardIndex), cardsValue.get(cardIndex));
-            //We declare a new ImageView newCard and assign the value of an imageview created in the getCard method
-            //We set the x and y coordinate to the class variables playerX and PlayerY and increases the playerX
-            //variable by 50, so the next card will be placed further to the right
-            ImageView newCard = getCard(playerX += 50, playerY);
-            //We add the new Imageview to the pane
-            pane.getChildren().add(newCard);
-
+            printCards();
+            updateCounter();
+            if(isBusted(players.get(playerTurn).getSum())){
+                players.get(playerTurn).setBusted(true);
+                pane.getChildren().add(addBustedText("Busted", players.get(playerTurn).getX() - 150, players.get(playerTurn).getY()));
+                playerTurn++;
+                rearrangeCircle(players.get(playerTurn));
+            }
+            if (playerTurn == numberOfPlayers - 1 && !allPlayersBusted()){
+                finishDealer();
+            }else if (allPlayersBusted()){
+                pane.getChildren().remove(playerMarker);
+            }
         }
     }
+
+    public void finishDealer(){
+        showDealerCard();
+        while(players.get(playerTurn).getSum()< 17) {
+            printCards();
+        }
+    }
+
+    public void updateCounter(){
+        counters.get(playerTurn).setText(Integer.toString(players.get(playerTurn).getSum()));
+    }
+
+    public void printCards(){
+        System.out.println(" sum : " + players.get(playerTurn).getSum());
+        players.get(playerTurn).addCard(cards.get(cardIndex), cardsValue.get(cardIndex));
+        System.out.println("Hitcard value: " + cardsValue.get(cardIndex));
+        System.out.println("New sum : " + players.get(playerTurn).getSum());
+        //We declare a new ImageView newCard and assign the value of an imageview created in the getCard method
+        //We set the x and y coordinate to the class variables playerX and PlayerY and increases the playerX
+        //variable by 50, so the next card will be placed further to the right
+        ImageView newCard = getCard(players.get(playerTurn).getX(), players.get(playerTurn).getY());
+        players.get(playerTurn).setX(players.get(playerTurn).getX() + 50);
+        //We add the new Imageview to the pane
+        pane.getChildren().add(newCard);
+    }
+
+
 
     //This class handles a certain event
     class StandHandler implements EventHandler<ActionEvent> {
@@ -140,8 +182,11 @@ public class Graphics extends Logic {
         @Override
         public void handle(ActionEvent e) {
             playerTurn++;
+            rearrangeCircle(players.get(playerTurn));
             if (playerTurn == numberOfPlayers - 1) {
-                showDealerCard();
+                pane.getChildren().remove(playerMarker);
+                finishDealer();
+
             }
         }
     }
@@ -186,20 +231,32 @@ public class Graphics extends Logic {
         return text;
     }
 
+    public Text addCounter(String number){
+        Text text = new Text(number);
+        text.setId("counter-text");
+        return text;
+    }
+
+    public void createCounters(){
+        for (int i = 0; i < numberOfPlayers - 1; i++){
+            Text temp = addCounter(Integer.toString(players.get(i).getSum()));
+            counters.add(temp);
+            temp.setX(players.get(i).getX() - 125);
+            temp.setY(players.get(i).getY() + 110);
+            pane.getChildren().add(temp);
+        }
+    }
+
     //This method takes a string and returns it as a Text object
-    public Text addText(String title, double x, double y){
+    public Text addBustedText(String title, double x, double y){
         //We create a new text from the string and sets its position and font
         Text text = new Text(title);
         text.setX(x); text.setY(y);
-        text.setId("points-text");
+        text.setId("busted-text");
         return text;
     }
 
     public void resetGraphics(){
-        dealerX = 440;
-        dealerY = 65;
-        playerX = 440;
-        playerY = 350;
         pane.getChildren().clear();
     }
 

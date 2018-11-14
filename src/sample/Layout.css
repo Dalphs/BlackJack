@@ -14,9 +14,15 @@
     -fx-alignment: CENTER;
     -fx-font-size: 70px;
 }
-#points-text{
+#busted-text{
     -fx-fill: linear-gradient(#E50615, #C4131F);
     -fx-font-weight: BOLD;
     -fx-alignment: LEFT;
+    -fx-font-size: 20px;
+}
+#counter-text{
+    -fx-fill: linear-gradient(#0000FF, #7ebcea);
+    -fx-font-weight: BOLD;
+    -fx-alignment: RIGHT;
     -fx-font-size: 15px;
 }

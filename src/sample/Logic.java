@@ -16,12 +16,27 @@ public class Logic extends Game{
     public Logic() {
     }
 
+    public void dealCardsValues(){
+        for (int i = 0; i < numberOfPlayers * 2; i++) {
+            players.get(i % 4).addCard(cards.get(i), cardsValue.get(i));
+            System.out.println(players.get(i % 4).getSum());
+        }
+    }
+
 
     //This method updates the classvariable playersum returns true if the player busts
     public boolean isBusted(int sum){
         if(sum > 21)
             return true;
         return false;
+    }
+
+    public boolean allPlayersBusted(){
+        for (int i = 0; i < numberOfPlayers - 1; i++) {
+           if (!players.get(i).isBusted())
+               return false;
+        }
+        return true;
     }
 
     public void resetLogic(){
@@ -63,6 +78,7 @@ public class Logic extends Game{
             cardsValue.add(cards.get(i));
         }
     }
+
 
    //Method that prints all values for the cards in the deck and the specific cards
     public void printCards(){

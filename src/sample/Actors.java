@@ -9,6 +9,7 @@ public class Actors {
     private double y;
     private int sum = 0;
     private int numberOfCards = 0;
+    private  boolean busted = false;
 
     public Actors() {
     }
@@ -82,5 +83,13 @@ public class Actors {
 
     public void setNumberOfCards(int numberOfCards) {
         this.numberOfCards = numberOfCards;
+    }
+
+    public boolean isBusted() {
+        return busted;
+    }
+
+    public void setBusted(boolean busted) {
+        this.busted = busted;
     }
 }

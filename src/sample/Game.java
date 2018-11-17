@@ -11,9 +11,11 @@ public class Game {
     public static int cardIndex;
     //Int that keeps trac of the players last hit
     public static int lastCad;
-    ArrayList<Actors> players = new ArrayList<>();
+    ArrayList<Player> players = new ArrayList<>();
     public static int numberOfPlayers = 0;
     public static int playerTurn = 0;
+    Dealer dealer = new Dealer();
+    int[] playerCoordinates = {840, 300, 540, 400, 240, 300};
 
     public Game() {
     }

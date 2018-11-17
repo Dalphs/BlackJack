@@ -17,10 +17,29 @@ public class Logic extends Game{
     }
 
     public void dealCardsValues(){
-        for (int i = 0; i < numberOfPlayers * 2; i++) {
-            players.get(i % 4).addCard(cards.get(i), cardsValue.get(i));
-            System.out.println(players.get(i % 4).getSum());
+        for (int i = 0; i < numberOfPlayers * 2 + 2; i++) {
+            if(i % (numberOfPlayers + 1) == numberOfPlayers){
+                dealer.addCard(cards.get(i), cardsValue.get(i));
+            }else {
+                players.get(i % (numberOfPlayers + 1)).addCard(cards.get(i), cardsValue.get(i));
+                System.out.println("Deal value card " + i + " is: " + cardsValue.get(i));
+            }
         }
+    }
+
+    public void reward (int status, Player a){
+        System.out.println("----------------------------------------");
+        switch (status){
+            case 1:
+                a.setMoney(a.getMoney() + a.getCurrentBet());break;
+            case 2:
+                a.setMoney(a.getMoney() - a.getCurrentBet()); break;
+            case 3:
+                a.setMoney(a.getMoney() + a.getCurrentBet() * 1.5); break;
+            default:
+                System.out.println("Draw"); break;
+        }
+        a.setCurrentBet(0);
     }
 
 
@@ -32,7 +51,7 @@ public class Logic extends Game{
     }
 
     public boolean allPlayersBusted(){
-        for (int i = 0; i < numberOfPlayers - 1; i++) {
+        for (int i = 0; i < numberOfPlayers; i++) {
            if (!players.get(i).isBusted())
                return false;
         }

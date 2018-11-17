@@ -3,7 +3,6 @@ package sample;
 import java.util.Collections;
 
 public class BlackJack extends Graphics {
-    int[] playerCoordinates = {840, 300, 540, 400, 240, 300};
     public BlackJack() {
     }
 
@@ -11,7 +10,6 @@ public class BlackJack extends Graphics {
         players.add(new Player(100, 810, 300));
         players.add(new Player(100, 510, 400));
         players.add(new Player(100, 210, 300));
-        players.add(new Dealer());
 
         defaultLayout();
 
@@ -24,6 +22,7 @@ public class BlackJack extends Graphics {
         dealCards();
         createPlayerMarker();
         createCounters();
+        bettingRound();
 
     }
 

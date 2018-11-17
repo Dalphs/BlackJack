@@ -86,6 +86,8 @@ public class Actors {
     }
 
     public boolean isBusted() {
+        if(sum > 21)
+            busted = true;
         return busted;
     }
 

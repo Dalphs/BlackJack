@@ -8,10 +8,10 @@
     -fx-text-fill: white;
     -fx-font-size: 24px;
 }
-#winning-text{
+#betting-text{
     -fx-fill: linear-gradient(#0000FF, #000099);
     -fx-font-weight: BOLD;
-    -fx-alignment: CENTER;
+    -fx-alignment: LEFT;
     -fx-font-size: 70px;
 }
 #busted-text{
@@ -25,4 +25,20 @@
     -fx-font-weight: BOLD;
     -fx-alignment: RIGHT;
     -fx-font-size: 15px;
+}
+#won-text{
+    -fx-fill: linear-gradient(#0000FF, #7ebcea);
+    -fx-font-weight: BOLD;
+    -fx-alignment: LEFT;
+    -fx-font-size: 20px;
+}
+#bet-button{
+    -fx-background-color: #000000,
+    linear-gradient(#7ebcea, #2f4b8f),
+    linear-gradient(#426ab7, #263e75),
+    linear-gradient(#395cab, #223768);
+    -fx-background-insets: 0,1,2,3;
+    -fx-background-radius: 3,2,2,2; -fx-padding: 12 30 12 30;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
 }

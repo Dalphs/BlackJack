@@ -20,23 +20,25 @@ I have decided to build a simple Black Jack game
 
 * Determining a winner
 
-* Starting a new game when the current game is finished
-
 * Using CSS when displaying the winner
 
-* Showing the dealers and players points
+* Showing the players points
 
 ## Began and still need to finish code for......
 
 * Multiplayer
+
+* Showing the dealers points
+
+* Betting for the player
+
+* Starting a new game when the current game is finished
 
 ## Things i want to implement......
 
 * Add delay when dealing cards and announcing winner
 
 * Showing statistics of the session played 
-
-* Betting for the player
 
 * Splitting and doubling
 
@@ -50,4 +52,4 @@ I have decided to build a simple Black Jack game
 
 * Animation for clicking button
 
-* Animation for dealing cards(dream on)
+* Animation for dealing cards

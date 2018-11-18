@@ -24,17 +24,19 @@ I have decided to build a simple Black Jack game
 
 * Showing the players points
 
-## Began and still need to finish code for......
-
-* Multiplayer
-
-* Showing the dealers points
-
 * Betting for the player
 
 * Starting a new game when the current game is finished
 
+## Began and still need to finish code for......
+
+* Multiplayer (User chooses amount of players)
+
+* Showing the dealers points
+
 ## Things i want to implement......
+
+* Icon for each user with current balance
 
 * Add delay when dealing cards and announcing winner
 

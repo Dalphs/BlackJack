@@ -11,18 +11,8 @@ public class BlackJack extends Graphics {
         players.add(new Player(100, 510, 400));
         players.add(new Player(100, 210, 300));
 
-        defaultLayout();
-
         numberOfPlayers = players.size();
-        fillArray(cards);
-        Collections.shuffle(cards);
-        copyArray();
-        getValues();
-        dealCardsValues();
-        dealCards();
-        createPlayerMarker();
-        createCounters();
-        bettingRound();
+        startButton();
 
     }
 

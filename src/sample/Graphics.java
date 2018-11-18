@@ -27,7 +27,7 @@ public class Graphics extends Logic {
     ArrayList<Text> counters = new ArrayList<>();
     //Buttons we use to start the first game, and start a new game
     Button start;
-    Button newGame = makeButton("New game", 200,  250, 200, 100);
+    Button newGame = makeButton("New game", 500,  250, 200, 100);
     private Circle playerMarker;
     private int betTurn = 0;
     private TextField bet;
@@ -109,7 +109,7 @@ public class Graphics extends Logic {
     //This method creates a startbutton, that will start our first game
     public void startButton(){
         //We assign the classvariable Button "start" the value of a new button
-        start = makeButton("Start game", 500, 250, 200, 100);
+        start = makeButton("Start Game", 500, 250, 200, 100);
         //We create a new StartHandler object to take action when start is pressed
         StartHandler startHandler = new StartHandler();
         start.setOnAction(startHandler);
@@ -156,7 +156,8 @@ public class Graphics extends Logic {
                 pane.getChildren().add(addBustedText(players.get(playerTurn).getX() - 150, players.get(playerTurn).getY()));
                 reward(2, players.get(playerTurn));
                 playerTurn++;
-                rearrangeCircle(players.get(playerTurn));
+                if(playerTurn != numberOfPlayers)
+                    rearrangeCircle(players.get(playerTurn));
             }
             if (playerTurn == numberOfPlayers && !allPlayersBusted()){
                 finishDealer();
@@ -190,6 +191,7 @@ public class Graphics extends Logic {
         for (Player p:players) {
             System.out.println("Player money: " + p.getMoney());
         }
+        pane.getChildren().add(newGame);
     }
 
     public void bettingRound(){
@@ -349,20 +351,33 @@ public class Graphics extends Logic {
             //First we set/reset our classvariables, so all methods works as intended
             resetLogic();
             resetGraphics();
+            counters.clear();
             //Prints the default layout with background and buttons
             defaultLayout();
+            for (Player p: players) {
+                p.reset();
+            }
+            dealer.reset();
+            bettingRound();
             //Fills the vleared array, shuffles it, then copies it to the cardValues arraylist
-            fillArray(cards);
-            Collections.shuffle(cards);
-            copyArray();
-            //converts the values from the cards arraylist to the corresponding points in blackjack
-            getValues();
-            //Giives the player and dealer 2 cards each
-            dealCards();
+
             //Removes the start button
             pane.getChildren().remove(start);
-            pane.getChildren().add(playerCount);
+
         }
+    }
+
+    public void afterBet(){
+        fillArray(cards);
+        Collections.shuffle(cards);
+        copyArray();
+        getValues();
+        dealCardsValues();
+        dealCards();
+        createPlayerMarker();
+        createCounters();
+        betTurn = 0;
+        playerTurn = 0;
     }
 
     class BetHandler implements EventHandler<ActionEvent> {
@@ -380,6 +395,7 @@ public class Graphics extends Logic {
             } else {
                 pane.getChildren().remove(bettingPane);
                 pane.getChildren().remove(placeYourBets);
+                afterBet();
             }
         }
     }

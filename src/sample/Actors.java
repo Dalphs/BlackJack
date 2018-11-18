@@ -30,6 +30,14 @@ public class Actors {
         }
     }
 
+    public void reset(){
+        x = x - 50 * numberOfCards;
+        numberOfCards = 0;
+        cards.clear();
+        cardsValue.clear();
+        busted = false;
+    }
+
     public void addCard(int card, int cardValue){
         this.cards.add(card);
         this.cardsValue.add(cardValue);

@@ -26,6 +26,10 @@
           <option name="url" value="https://github.com/sainsh/OnlineBattleship.git" />
           <option name="userName" value="" />
         </UrlAndUserName>
+        <UrlAndUserName>
+          <option name="url" value="https://github.com/sainsh/OnlineBattleshipServer.git" />
+          <option name="userName" value="" />
+        </UrlAndUserName>
       </list>
     </option>
     <option name="cloneParentDir" value="C:\Users\simon\IdeaProjects\3. semester" />
